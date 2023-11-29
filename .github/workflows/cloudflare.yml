@@ -1,0 +1,33 @@
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set Environment Variables for Secrets
+        run: |
+          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            echo "CLOUDFLARE_NAME=${{ secrets.CLOUDFLARE_NAME_MAIN }}" >> $GITHUB_ENV
+            echo "CLOUDFLARE_DATABASE_ID=${{ secrets.CLOUDFLARE_DATABASE_ID_MAIN }}" >> $GITHUB_ENV
+          elif [ "$GITHUB_REF" = "refs/heads/develop" ]; then
+            echo "CLOUDFLARE_NAME=${{ secrets.CLOUDFLARE_NAME_DEVELOP }}" >> $GITHUB_ENV
+            echo "CLOUDFLARE_DATABASE_ID=${{ secrets.CLOUDFLARE_DATABASE_ID_DEVELOP }}" >> $GITHUB_ENV
+          fi
+
+      - name: Modify wrangler.toml
+        run: |
+          sed -i "s|placeholder_for_name|$CLOUDFLARE_NAME|" wrangler.toml
+          sed -i "s|placeholder_for_database_id|$CLOUDFLARE_DATABASE_ID|" wrangler.toml
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
