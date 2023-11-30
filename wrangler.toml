@@ -1,5 +1,5 @@
-name = "blog-development-d1"
-main = "src/index.ts"
+name = "placeholder_for_name"
+main = "index.ts"
 compatibility_date = "2023-05-18"
 
 # Variable bindings. These are arbitrary, plaintext strings (similar to environment variables)
@@ -49,3 +49,8 @@ compatibility_date = "2023-05-18"
 # [[migrations]]
 # tag = "v1"
 # new_classes = ["MyDurableObject"]
+
+[[d1_databases]]
+binding = "DB" # available in your Worker on env.DB
+database_name = "blog"
+database_id = "placeholder_for_database_id"
