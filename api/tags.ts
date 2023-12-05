@@ -51,7 +51,7 @@ const postTag = () => {
 				const selectSql = 'SELECT * FROM tags WHERE id = $1';
 				const selectStatement = await env.DB.prepare(selectSql);
 				const tagResult = await selectStatement.bind(newTagId).all();
-				return { tag: tagResult.results, error: null };
+				return { tag: tagResult.results[0], error: null };
 			} catch (error: any) {
 				return { error: 500, msg: `Server error: ${error.message}` };
 			}
